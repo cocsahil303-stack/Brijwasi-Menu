@@ -156,12 +156,15 @@
     transition: color 0.35s ease;
     font-weight:600;
   }
-  .price .strike{
-    text-decoration: line-through;
-    color: var(--cream-dim);
-    opacity:0.6;
+  .price .or{
+    color: var(--chutney);
+    opacity:0.85;
     font-weight:400;
-    margin-right:6px;
+    font-style:italic;
+    font-size:12px;
+    letter-spacing:0.1em;
+    margin:0 6px;
+    text-transform:uppercase;
   }
 
   .arrow{
@@ -239,13 +242,13 @@ const LINK = "https://share.google/qTzKsk8J3nyafrvM2";
 const items = [
   { name: "Mix Chat", price: "70" },
   { name: "Bun Tikki", price: "70" },
-  { name: "Aloo Tikki", price: "70", strike: "40" },
+  { name: "Aloo Tikki", price: "70", or: "40" },
   { name: "Papri Chat", price: "70" },
   { name: "Gol Gappe", price: "70" },
   { name: "Spl. Dahi Bhalla", price: "70" },
-  { name: "Bhel Puri", price: "80", strike: "120" },
+  { name: "Bhel Puri", price: "80", or: "120" },
   { name: "Dahi Puri", price: "100" },
-  { name: "Dahi Bhalla", price: "70", strike: "40" },
+  { name: "Dahi Bhalla", price: "70", or: "40" },
   { name: "Moong Pakori", price: "70" },
   { name: "Papri Pakori", price: "70" },
   { name: "Double Bun Tikki", price: "100" },
@@ -259,13 +262,13 @@ items.forEach((item, i) => {
   li.className = "item";
   li.style.animationDelay = (0.15 + i * 0.07) + "s";
 
-  const strikeHTML = item.strike ? `<span class="strike">₹${item.strike}</span>` : "";
+  const orHTML = item.or ? `<span class="or">or</span>₹${item.or}/-` : "";
 
   li.innerHTML = `
     <a href="${LINK}" target="_blank" rel="noopener">
       <span class="name">${item.name}</span>
       <span class="dots"></span>
-      <span class="price">${strikeHTML}₹${item.price}/-</span>
+      <span class="price">₹${item.price}/-${orHTML}</span>
       <span class="arrow">&#10148;</span>
     </a>
   `;
