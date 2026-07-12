@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brijwasi Chat</title>
+<style>
+  :root{
+    --bg: #1f1108;
+    --bg-2: #2a160c;
+    --card: #341c10;
+    --gold: #e8b25f;
+    --gold-soft: #c98f3f;
+    --cream: #f4e6c9;
+    --cream-dim: #cbb894;
+    --chutney: #8fae3e;
+    --chutney-dim: #6f8a30;
+    --divider: rgba(232,178,95,0.18);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(232,178,95,0.10), transparent),
+      radial-gradient(ellipse 60% 40% at 90% 100%, rgba(143,174,62,0.08), transparent),
+      var(--bg);
+    color:var(--cream);
+    font-family: 'Georgia', 'Times New Roman', serif;
+    overflow-x:hidden;
+    min-height:100vh;
+  }
+
+  /* subtle grain */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events:none;
+    z-index:1;
+  }
+
+  .wrap{
+    max-width:640px;
+    margin:0 auto;
+    padding: 60px 24px 100px;
+    position:relative;
+    z-index:2;
+  }
+
+  header{
+    text-align:center;
+    margin-bottom:56px;
+    opacity:0;
+    animation: dropIn 1s cubic-bezier(.16,1,.3,1) forwards;
+  }
+  .eyebrow{
+    letter-spacing:0.35em;
+    font-size:11px;
+    text-transform:uppercase;
+    color:var(--chutney);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    margin-bottom:14px;
+  }
+  h1{
+    font-size:clamp(38px,9vw,58px);
+    margin:0;
+    font-weight:400;
+    letter-spacing:0.02em;
+    color:var(--gold);
+    text-shadow: 0 0 40px rgba(232,178,95,0.25);
+    line-height:1.1;
+  }
+  h1 span{ display:block; font-style:italic; color:var(--cream); font-size:0.4em; letter-spacing:0.3em; margin-top:10px; }
+
+  .est{
+    margin-top:18px;
+    font-size:12px;
+    letter-spacing:0.25em;
+    color:var(--cream-dim);
+    font-family:'Helvetica Neue', Arial, sans-serif;
+  }
+
+  .ornament{
+    width:120px; height:20px; margin:24px auto 0;
+    opacity:0.6;
+  }
+
+  .menu-list{
+    list-style:none;
+    margin:0; padding:0;
+    display:flex; flex-direction:column;
+    gap:2px;
+  }
+
+  .item{
+    opacity:0;
+    transform: translateY(18px);
+    animation: riseIn 0.7s cubic-bezier(.16,1,.3,1) forwards;
+  }
+
+  .item a{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    text-decoration:none;
+    color:inherit;
+    padding:18px 18px;
+    border-radius:10px;
+    position:relative;
+    transition: background 0.4s ease, transform 0.35s cubic-bezier(.16,1,.3,1), padding-left 0.35s ease;
+  }
+
+  .item a::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:10px;
+    background: linear-gradient(90deg, rgba(232,178,95,0.0), rgba(232,178,95,0.10));
+    opacity:0;
+    transition: opacity 0.35s ease;
+  }
+
+  .item a:active{ transform: scale(0.98); }
+
+  @media (hover:hover){
+    .item a:hover{ padding-left:26px; }
+    .item a:hover::before{ opacity:1; }
+    .item a:hover .name{ color:var(--gold); }
+    .item a:hover .price{ color:var(--chutney); }
+    .item a:hover .arrow{ opacity:1; transform:translateX(0); }
+  }
+
+  .name{
+    font-size:19px;
+    letter-spacing:0.03em;
+    color:var(--cream);
+    transition: color 0.35s ease;
+    flex:1;
+    min-width:0;
+  }
+
+  .dots{
+    flex:1;
+    border-bottom:1.5px dotted var(--divider);
+    margin-bottom:6px;
+    min-width:20px;
+  }
+
+  .price{
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    font-size:15px;
+    letter-spacing:0.05em;
+    color:var(--gold-soft);
+    white-space:nowrap;
+    transition: color 0.35s ease;
+    font-weight:600;
+  }
+  .price .strike{
+    text-decoration: line-through;
+    color: var(--cream-dim);
+    opacity:0.6;
+    font-weight:400;
+    margin-right:6px;
+  }
+
+  .arrow{
+    opacity:0;
+    transform:translateX(-6px);
+    transition: all 0.35s ease;
+    color:var(--chutney);
+    font-size:16px;
+  }
+
+  .note{
+    text-align:center;
+    margin-top:44px;
+    font-size:12.5px;
+    letter-spacing:0.08em;
+    color:var(--cream-dim);
+    font-family:'Helvetica Neue', Arial, sans-serif;
+    opacity:0;
+    animation: fadeIn 1s ease forwards;
+    animation-delay: 1.4s;
+  }
+
+  .footer-ornament{
+    text-align:center;
+    margin-top:34px;
+    color:var(--chutney-dim);
+    font-size:22px;
+    letter-spacing:16px;
+    opacity:0;
+    animation: fadeIn 1s ease forwards;
+    animation-delay:1.6s;
+  }
+
+  @keyframes dropIn{
+    from{ opacity:0; transform: translateY(-24px); }
+    to{ opacity:1; transform: translateY(0); }
+  }
+  @keyframes riseIn{
+    to{ opacity:1; transform: translateY(0); }
+  }
+  @keyframes fadeIn{
+    to{ opacity:1; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
+
+  ::selection{ background: var(--gold); color:var(--bg); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Since the streets of Braj</div>
+    <h1>Brijwasi<span>Chat Bhandar</span></h1>
+    <div class="est">Tap any dish to order</div>
+    <svg class="ornament" viewBox="0 0 120 20" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="10" x2="45" y2="10" stroke="#e8b25f" stroke-width="1"/>
+      <circle cx="60" cy="10" r="4" fill="none" stroke="#8fae3e" stroke-width="1.2"/>
+      <line x1="75" y1="10" x2="120" y2="10" stroke="#e8b25f" stroke-width="1"/>
+    </svg>
+  </header>
+
+  <ul class="menu-list" id="menuList">
+  </ul>
+
+  <div class="note">All prices in ₹ &middot; Disposal charges extra</div>
+  <div class="footer-ornament">• • •</div>
+</div>
+
+<script>
+const LINK = "https://share.google/qTzKsk8J3nyafrvM2";
+
+const items = [
+  { name: "Mix Chat", price: "70" },
+  { name: "Bun Tikki", price: "70" },
+  { name: "Aloo Tikki", price: "70", strike: "40" },
+  { name: "Papri Chat", price: "70" },
+  { name: "Gol Gappe", price: "70" },
+  { name: "Spl. Dahi Bhalla", price: "70" },
+  { name: "Bhel Puri", price: "80", strike: "120" },
+  { name: "Dahi Puri", price: "100" },
+  { name: "Dahi Bhalla", price: "70", strike: "40" },
+  { name: "Moong Pakori", price: "70" },
+  { name: "Papri Pakori", price: "70" },
+  { name: "Double Bun Tikki", price: "100" },
+  { name: "Kanji Glass", price: "20" },
+];
+
+const list = document.getElementById("menuList");
+
+items.forEach((item, i) => {
+  const li = document.createElement("li");
+  li.className = "item";
+  li.style.animationDelay = (0.15 + i * 0.07) + "s";
+
+  const strikeHTML = item.strike ? `<span class="strike">₹${item.strike}</span>` : "";
+
+  li.innerHTML = `
+    <a href="${LINK}" target="_blank" rel="noopener">
+      <span class="name">${item.name}</span>
+      <span class="dots"></span>
+      <span class="price">${strikeHTML}₹${item.price}/-</span>
+      <span class="arrow">&#10148;</span>
+    </a>
+  `;
+  list.appendChild(li);
+});
+</script>
+</body>
+</html>
